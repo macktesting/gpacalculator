@@ -1,26 +1,17 @@
 /**
  * GPA Calculator by Macklin
  * File: script.js
- * Version: 2.0
+ * Version: 2.1 (Fixed)
  */
 
 // ========== GLOBAL VARIABLES ==========
 let subjects = [];
 
 // DOM Elements
-const subjectNameInput = document.getElementById('subjectName');
-const subjectCreditInput = document.getElementById('subjectCredit');
-const subjectGradeInput = document.getElementById('subjectGrade');
-const addSubjectBtn = document.getElementById('addSubject');
-const calculateGpaBtn = document.getElementById('calculateGPA');
-const subjectsContainer = document.getElementById('subjectsContainer');
-const emptyState = document.getElementById('emptyState');
-const resultContainer = document.getElementById('resultContainer');
-const gpaValue = document.getElementById('gpaValue');
-const gpaStatus = document.getElementById('gpaStatus');
-const totalCreditsSpan = document.getElementById('totalCredits');
-const totalSubjectsSpan = document.getElementById('totalSubjects');
-const totalQualityPointsSpan = document.getElementById('totalQualityPoints');
+let subjectNameInput, subjectCreditInput, subjectGradeInput;
+let addSubjectBtn, calculateGpaBtn, subjectsContainer;
+let emptyState, resultContainer, gpaValue, gpaStatus;
+let totalCreditsSpan, totalSubjectsSpan, totalQualityPointsSpan;
 
 // ========== GRADE MAPPINGS ==========
 const gradeToLetter = {
@@ -51,54 +42,48 @@ const gradeToClass = {
     '0.00': 'grade-E'
 };
 
-// ========== GPA STATUS FUNCTION ==========
-function getGPAStatus(gpa) {
-    const statuses = [
-        { min: 3.85, max: 4.00, status: 'SUMMA CUM LAUDE', color: '#4ade80', emoji: '🏆' },
-        { min: 3.70, max: 3.84, status: 'MAGNA CUM LAUDE', color: '#22c55e', emoji: '🎖️' },
-        { min: 3.50, max: 3.69, status: 'CUM LAUDE', color: '#16a34a', emoji: '⭐' },
-        { min: 3.30, max: 3.49, status: 'SANGAT MEMUASKAN', color: '#60a5fa', emoji: '👍' },
-        { min: 3.00, max: 3.29, status: 'MEMUASKAN', color: '#3b82f6', emoji: '👌' },
-        { min: 2.70, max: 2.99, status: 'BAIK', color: '#8b5cf6', emoji: '✅' },
-        { min: 2.30, max: 2.69, status: 'CUKUP BAIK', color: '#f59e0b', emoji: '🔶' },
-        { min: 2.00, max: 2.29, status: 'CUKUP', color: '#f97316', emoji: '⚠️' },
-        { min: 1.70, max: 1.99, status: 'KURANG', color: '#ef4444', emoji: '🔻' },
-        { min: 1.00, max: 1.69, status: 'SANGAT KURANG', color: '#dc2626', emoji: '❌' },
-        { min: 0.00, max: 0.99, status: 'GAGAL', color: '#991b1b', emoji: '💀' }
-    ];
+// ========== INITIALIZE DOM ELEMENTS ==========
+function initializeDOMElements() {
+    subjectNameInput = document.getElementById('subjectName');
+    subjectCreditInput = document.getElementById('subjectCredit');
+    subjectGradeInput = document.getElementById('subjectGrade');
+    addSubjectBtn = document.getElementById('addSubject');
+    calculateGpaBtn = document.getElementById('calculateGPA');
+    subjectsContainer = document.getElementById('subjectsContainer');
+    emptyState = document.getElementById('emptyState');
+    resultContainer = document.getElementById('resultContainer');
+    gpaValue = document.getElementById('gpaValue');
+    gpaStatus = document.getElementById('gpaStatus');
+    totalCreditsSpan = document.getElementById('totalCredits');
+    totalSubjectsSpan = document.getElementById('totalSubjects');
+    totalQualityPointsSpan = document.getElementById('totalQualityPoints');
     
-    for (const range of statuses) {
-        if (gpa >= range.min && gpa <= range.max) {
-            return {
-                status: `${range.emoji} ${range.status}`,
-                color: range.color,
-                gradient: `linear-gradient(135deg, ${range.color}, #8a2be2)`
-            };
-        }
-    }
-    
-    return {
-        status: '❓ TIDAK TERDEFINISI',
-        color: '#666',
-        gradient: 'linear-gradient(135deg, #666, #8a2be2)'
-    };
+    console.log('DOM Elements loaded:', {
+        addSubjectBtn: !!addSubjectBtn,
+        calculateGpaBtn: !!calculateGpaBtn,
+        subjectNameInput: !!subjectNameInput
+    });
 }
 
 // ========== ADD SUBJECT FUNCTION ==========
 function addSubject() {
+    console.log('addSubject function called!');
+    
     const name = subjectNameInput.value.trim();
     const credit = parseInt(subjectCreditInput.value);
     const gradeValue = parseFloat(subjectGradeInput.value);
     
+    console.log('Input values:', { name, credit, gradeValue });
+    
     // Validation
     if (!name) {
-        showAlert('Mohon masukkan nama mata kuliah', 'warning');
+        alert('⚠️ Mohon masukkan nama mata kuliah');
         subjectNameInput.focus();
         return;
     }
     
     if (credit < 1 || credit > 8) {
-        showAlert('SKS harus antara 1-8', 'warning');
+        alert('⚠️ SKS harus antara 1-8');
         return;
     }
     
@@ -112,6 +97,8 @@ function addSubject() {
     };
     
     subjects.push(subject);
+    console.log('Subject added:', subject);
+    console.log('Total subjects:', subjects.length);
     
     // Clear input and focus
     subjectNameInput.value = '';
@@ -122,13 +109,15 @@ function addSubject() {
     updateEmptyState();
     
     // Show success message
-    showAlert(`"${name}" berhasil ditambahkan!`, 'success');
+    showMessage(`✅ "${name}" berhasil ditambahkan!`, 'success');
 }
 
 // ========== CALCULATE GPA FUNCTION ==========
 function calculateGPA() {
+    console.log('calculateGPA function called!');
+    
     if (subjects.length === 0) {
-        showAlert('Tambahkan minimal satu mata kuliah terlebih dahulu', 'warning');
+        alert('⚠️ Tambahkan minimal satu mata kuliah terlebih dahulu');
         return;
     }
     
@@ -144,6 +133,12 @@ function calculateGPA() {
     const gpa = totalQualityPoints / totalCredits;
     const formattedGPA = gpa.toFixed(2);
     
+    console.log('Calculation:', {
+        totalQualityPoints,
+        totalCredits,
+        gpa: formattedGPA
+    });
+    
     // Get GPA status
     const gpaInfo = getGPAStatus(parseFloat(formattedGPA));
     
@@ -151,7 +146,40 @@ function calculateGPA() {
     updateResults(formattedGPA, gpaInfo, totalQualityPoints, totalCredits);
     
     // Show success message
-    showAlert(`IPK berhasil dihitung: ${formattedGPA}`, 'success');
+    showMessage(`🎓 IPK berhasil dihitung: ${formattedGPA}`, 'success');
+}
+
+// ========== GPA STATUS FUNCTION ==========
+function getGPAStatus(gpa) {
+    const statuses = [
+        { min: 3.85, max: 4.00, status: 'SUMMA CUM LAUDE', color: '#4ade80' },
+        { min: 3.70, max: 3.84, status: 'MAGNA CUM LAUDE', color: '#22c55e' },
+        { min: 3.50, max: 3.69, status: 'CUM LAUDE', color: '#16a34a' },
+        { min: 3.30, max: 3.49, status: 'SANGAT MEMUASKAN', color: '#60a5fa' },
+        { min: 3.00, max: 3.29, status: 'MEMUASKAN', color: '#3b82f6' },
+        { min: 2.70, max: 2.99, status: 'BAIK', color: '#8b5cf6' },
+        { min: 2.30, max: 2.69, status: 'CUKUP BAIK', color: '#f59e0b' },
+        { min: 2.00, max: 2.29, status: 'CUKUP', color: '#f97316' },
+        { min: 1.70, max: 1.99, status: 'KURANG', color: '#ef4444' },
+        { min: 1.00, max: 1.69, status: 'SANGAT KURANG', color: '#dc2626' },
+        { min: 0.00, max: 0.99, status: 'GAGAL', color: '#991b1b' }
+    ];
+    
+    for (const range of statuses) {
+        if (gpa >= range.min && gpa <= range.max) {
+            return {
+                status: range.status,
+                color: range.color,
+                gradient: `linear-gradient(135deg, ${range.color}, #8a2be2)`
+            };
+        }
+    }
+    
+    return {
+        status: 'TIDAK TERDEFINISI',
+        color: '#666',
+        gradient: 'linear-gradient(135deg, #666, #8a2be2)'
+    };
 }
 
 // ========== UPDATE RESULTS DISPLAY ==========
@@ -159,13 +187,14 @@ function updateResults(gpa, gpaInfo, qualityPoints, credits) {
     // Update GPA value
     gpaValue.textContent = gpa;
     gpaValue.style.background = gpaInfo.gradient;
+    gpaValue.style.webkitBackgroundClip = 'text';
+    gpaValue.style.backgroundClip = 'text';
     
     // Update status
     gpaStatus.textContent = gpaInfo.status;
     gpaStatus.style.backgroundColor = gpaInfo.color + '20';
     gpaStatus.style.color = gpaInfo.color;
-    gpaStatus.style.border = `2px solid ${gpaInfo.color}40`;
-    gpaStatus.style.boxShadow = `0 5px 20px ${gpaInfo.color}30`;
+    gpaStatus.style.border = `1px solid ${gpaInfo.color}40`;
     
     // Update details
     totalCreditsSpan.textContent = credits;
@@ -178,6 +207,8 @@ function updateResults(gpa, gpaInfo, qualityPoints, credits) {
 
 // ========== DELETE SUBJECT FUNCTION ==========
 function deleteSubject(id) {
+    console.log('Deleting subject with id:', id);
+    
     // Find subject index
     const index = subjects.findIndex(subject => subject.id === id);
     
@@ -197,12 +228,14 @@ function deleteSubject(id) {
         }
         
         // Show delete message
-        showAlert(`"${subjectName}" telah dihapus`, 'info');
+        showMessage(`🗑️ "${subjectName}" telah dihapus`, 'info');
     }
 }
 
 // ========== RENDER SUBJECTS LIST ==========
 function renderSubjects() {
+    console.log('Rendering subjects:', subjects);
+    
     if (subjects.length === 0) {
         subjectsContainer.innerHTML = '';
         subjectsContainer.appendChild(emptyState);
@@ -217,14 +250,8 @@ function renderSubjects() {
         const gradeKey = subject.gradeValue.toFixed(2);
         html += `
             <div class="subject-item">
-                <div class="subject-name">
-                    <i class="fas fa-book-open" style="margin-right: 10px; color: #8a2be2;"></i>
-                    ${subject.name}
-                </div>
-                <div class="subject-credit">
-                    <i class="fas fa-weight" style="margin-right: 8px;"></i>
-                    ${subject.credit} SKS
-                </div>
+                <div class="subject-name">${subject.name}</div>
+                <div class="subject-credit">${subject.credit} SKS</div>
                 <div class="subject-grade ${gradeToClass[gradeKey]}">
                     ${subject.letterGrade} (${gradeKey})
                 </div>
@@ -247,69 +274,50 @@ function updateEmptyState() {
     }
 }
 
-// ========== SHOW ALERT FUNCTION ==========
-function showAlert(message, type = 'info') {
-    // Remove existing alerts
-    const existingAlert = document.querySelector('.custom-alert');
-    if (existingAlert) {
-        existingAlert.remove();
-    }
-    
-    // Create alert
-    const alert = document.createElement('div');
-    alert.className = `custom-alert alert-${type}`;
-    alert.innerHTML = `
-        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
-        <span>${message}</span>
-    `;
-    
-    // Add styles
-    alert.style.cssText = `
-        position: fixed;
-        top: 30px;
-        right: 30px;
-        padding: 15px 25px;
-        background: ${type === 'success' ? 'rgba(74, 222, 128, 0.15)' : 
-                     type === 'warning' ? 'rgba(251, 191, 36, 0.15)' : 'rgba(96, 165, 250, 0.15)'};
-        color: ${type === 'success' ? '#4ade80' : 
-                type === 'warning' ? '#fbbf24' : '#60a5fa'};
-        border: 1px solid ${type === 'success' ? 'rgba(74, 222, 128, 0.3)' : 
-                          type === 'warning' ? 'rgba(251, 191, 36, 0.3)' : 'rgba(96, 165, 250, 0.3)'};
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        font-weight: 500;
-        z-index: 1000;
-        backdrop-filter: blur(10px);
-        animation: slideInRight 0.3s ease;
-        max-width: 350px;
-    `;
-    
-    document.body.appendChild(alert);
-    
-    // Remove after 3 seconds
-    setTimeout(() => {
-        alert.style.animation = 'slideOutRight 0.3s ease';
-        setTimeout(() => alert.remove(), 300);
-    }, 3000);
+// ========== SHOW MESSAGE FUNCTION ==========
+function showMessage(message, type = 'info') {
+    // Simple alert for now
+    console.log(`${type.toUpperCase()}: ${message}`);
 }
 
-// Add keyframe animations for alerts
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideInRight {
-        from { transform: translateX(100%); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-    }
-    @keyframes slideOutRight {
-        from { transform: translateX(0); opacity: 1; }
-        to { transform: translateX(100%); opacity: 0; }
-    }
-`;
-document.head.appendChild(style);
-
 // ========== INITIALIZE EVENT LISTENERS ==========
+function initializeEventListeners() {
+    console.log('Initializing event listeners...');
+    
+    // Add subject button
+    addSubjectBtn.addEventListener('click', addSubject);
+    console.log('addSubject event listener added');
+    
+    // Calculate GPA button
+    calculateGpaBtn.addEventListener('click', calculateGPA);
+    console.log('calculateGPA event listener added');
+    
+    // Enter key to add subject
+    subjectNameInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            addSubject();
+        }
+    });
+}
+
+// ========== INITIALIZE APP ==========
+function initializeApp() {
+    console.log('🚀 Initializing GPA C();
+    initializeEventListeners();
+    renderSubjects();
+    
+    console.log('✅ App initialized successfully!');
+    console.log('Subjects array:', subjects);
+    console.log('Test: Type "addSubject()" in console to test function');
+}
+
+// ========== START APPLICATION ==========
+document.addEventListener('DOMContentLoaded', initializeApp);
+
+// Make functions available globally
+window.deleteSubject = deleteSubject;
+window.addSubject = addSubject;
+window.calculateGPA = calculateGPA;IALIZE EVENT LISTENERS ==========
 function initializeEventListeners() {
     // Add subject button
     addSubjectBtn.addEventListener('click', addSubject);
