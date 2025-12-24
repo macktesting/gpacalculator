@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPA Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧮</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-calculator"></i> Kalkulator IPK</h1>
+            <p>Hitung IPK dengan Akurat</p>
+        </div>
+        
+        <div class="form-container">
+            <div class="input-group">
+                <label for="subjectName"><i class="fas fa-book"></i> Nama Mata Kuliah</label>
+                <input type="text" id="subjectName" placeholder="Contoh: Struktur Data" autocomplete="off">
+            </div>
+            
+            <div class="input-group">
+                <label for="subjectCredit"><i class="fas fa-weight-hanging"></i> Jumlah SKS</label>
+                <input type="number" id="subjectCredit" min="1" max="8" value="3" placeholder="SKS">
+            </div>
+            
+            <div class="input-group">
+                <label for="subjectGrade"><i class="fas fa-graduation-cap"></i> Nilai</label>
+                <select id="subjectGrade">
+                    <option value="4.00">A (4.00) - Excellent</option>
+                    <option value="3.70">A- (3.70) - Very Good</option>
+                    <option value="3.30">B+ (3.30) - Good Plus</option>
+                    <option value="3.00">B (3.00) - Good</option>
+                    <option value="2.70">B- (2.70) - Satisfactory Plus</option>
+                    <option value="2.30">C+ (2.30) - Satisfactory</option>
+                    <option value="2.00">C (2.00) - Adequate</option>
+                    <option value="1.70">C- (1.70) - Minimal Pass</option>
+                    <option value="1.30">D+ (1.30) - Poor Plus</option>
+                    <option value="1.00">D (1.00) - Poor</option>
+                    <option value="0.00">E (0.00) - Fail</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="buttons">
+            <button class="btn btn-primary" id="addSubject">
+                <i class="fas fa-plus-circle"></i> Tambah Mata Kuliah
+            </button>
+            <button class="btn btn-secondary" id="calculateGPA">
+                <i class="fas fa-calculator"></i> Hitung IPK
+            </button>
+        </div>
+        
+        <div class="subjects-list">
+            <h2><i class="fas fa-list"></i> Daftar Mata Kuliah</h2>
+            <div id="subjectsContainer">
+                <div class="empty-state" id="emptyState">
+                    <i class="fas fa-clipboard-list"></i>
+                    <p>Belum ada mata kuliah ditambahkan</p>
+                    <p style="font-size: 0.9rem; margin-top: 10px;">Tambahkan mata kuliah menggunakan form di atas</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="result-container" id="resultContainer">
+            <div class="gpa-label">Indeks Prestasi Semester (Skala 4.0)</div>
+            <div class="gpa-value" id="gpaValue">0.00</div>
+            <div class="gpa-status" id="gpaStatus">Tambahkan mata kuliah untuk menghitung</div>
+            
+            <div class="gpa-details">
+                <div class="detail-item">
+                    <div class="detail-value" id="totalQualityPoints">0</div>
+                    <div class="detail-label">Total Quality Points</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-value" id="totalCredits">0</div>
+                    <div class="detail-label">Total SKS</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-value" id="totalSubjects">0</div>
+                    <div class="detail-label">Jumlah Matkul</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="scale-info">
+            <div style="margin-bottom: 10px; color: #ccc;">
+                <i class="fas fa-info-circle"></i> Skala Nilai yang Digunakan:
+            </div>
+            <div class="scale-grid">
+                <div class="scale-item">4.00 = A</div>
+                <div class="scale-item">3.70 = A-</div>
+                <div class="scale-item">3.30 = B+</div>
+                <div class="scale-item">3.00 = B</div>
+                <div class="scale-item">2.70 = B-</div>
+                <div class="scale-item">2.30 = C+</div>
+                <div class="scale-item">2.00 = C</div>
+                <div class="scale-item">1.70 = C-</div>
+                <div class="scale-item">1.30 = D+</div>
+                <div class="scale-item">1.00 = D</div>
+                <div class="scale-item">0.00 = E</div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>GPA Calculator v2.0 | Data Science Project By Macklin | © 2025</p>
+            <p style="margin-top: 5px; font-size: 0.8rem; color: #666;">
+                Rumus: GPA = Σ(Nilai × SKS) ÷ Σ(SKS)
+            </p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
